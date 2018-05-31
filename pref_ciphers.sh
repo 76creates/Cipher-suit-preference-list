@@ -15,13 +15,9 @@ do
     first_preference=$(get_prefered $protocol "$temp_list")
     declare -a pref_$protocol
     case $first_preference in
-        "") echo -e "\033[1m$protocol\033[0m not supported"; continue;;
-            
-        0000) echo -e "\033[1m$protocol\033[0m"
-                echo -e "\tNo cipher in cipher list is supported"
-                continue;;
+        0000) echo -e "\033[1m$protocol\033[0m not supported"; continue;;
         
-        *)echo $protocol
+        *)echo -e "\033[1m$protocol\033[0m"
             echo -e "\t$first_preference"
             temp_list=$(echo $temp_list | sed -e "s/\:$first_preference\:/\:/");;
     esac
