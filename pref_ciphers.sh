@@ -14,7 +14,16 @@ cipher_list=":"$(openssl ciphers)":"
 function get_prefered() {
     # $1 > protocol version
     # $2 > cipher
-    echo -n | openssl s_client -$1 -cipher $2 -connect $host:$port 2>&1 | grep "Cipher    :" | cut -d" " -f 10
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        echo -n | timeout -s SIGTERM -k 5s 3s openssl s_client -$1 -cipher $2 -connect $host:$port 2>&1 | grep "Cipher    :" | cut -d" " -f 10
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        # brew install coreutils
+        echo -n | gtimeout -s SIGTERM -k 5s 3s openssl s_client -$1 -cipher $2 -connect $host:$port 2>&1 | grep "Cipher    :" | cut -d" " -f 10
+    else 
+        #unknown os
+        echo "unknown OS"
+        exit 1
+    fi
 }
 
 echo "Cipher suit preference list"
