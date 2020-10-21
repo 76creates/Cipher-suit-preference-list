@@ -1,10 +1,20 @@
 #!/bin/bash
 
 host=$1
+
+if [[ -z $2 ]]
+then 
+    port=443
+else 
+    port=$2
+fi
+
 cipher_list=":"$(openssl ciphers)":"
 
 function get_prefered() {
-    echo -n | openssl s_client -$1 -cipher $2 -connect $host:443 2>&1 | grep "Cipher    :" | cut -d" " -f 10
+    # $1 > protocol version
+    # $2 > cipher
+    echo -n | openssl s_client -$1 -cipher $2 -connect $host:$port 2>&1 | grep "Cipher    :" | cut -d" " -f 10
 }
 
 echo "Cipher suit preference list"
